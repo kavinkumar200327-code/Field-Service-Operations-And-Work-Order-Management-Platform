@@ -1,0 +1,515 @@
+{
+  "info": {
+    "_postman_id": "c1f7b539-74d1-447b-b892-servisync001",
+    "name": "Field Service Operations & Work Order Management Platform (ServiSync)",
+    "description": "Comprehensive API collection for Field Service Operations with JWT Authentication, RBAC, Scheduling, Parts Inventory, Job Execution, and PDF Reports.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login (Super Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.access_token) {",
+                  "    pm.collectionVariables.set('access_token', jsonData.data.access_token);",
+                  "    pm.collectionVariables.set('refresh_token', jsonData.data.refresh_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@servisync.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login (Dispatcher)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"dispatcher@servisync.com\",\n  \"password\": \"Dispatcher@123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login (Technician)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"tech.alex@servisync.com\",\n  \"password\": \"Tech@123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User Profile (/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token Rotation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "refresh"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Customer Management",
+      "item": [
+        {
+          "name": "List Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers",
+              "host": ["{{base_url}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Apex Logistics HQ\",\n  \"email\": \"ops@apexlogistics.com\",\n  \"phone\": \"+1 (555) 765-4321\",\n  \"customer_type\": \"BUSINESS\",\n  \"address\": \"800 Terminal Blvd, Suite 400\",\n  \"city\": \"Chicago\",\n  \"state\": \"IL\",\n  \"postal_code\": \"60666\",\n  \"service_location\": \"Building C, Loading Bay 4\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers",
+              "host": ["{{base_url}}"],
+              "path": ["customers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Technician Management",
+      "item": [
+        {
+          "name": "List Technicians",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/technicians",
+              "host": ["{{base_url}}"],
+              "path": ["technicians"]
+            }
+          }
+        },
+        {
+          "name": "Get Technician Availability & Schedule",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/technicians/{{tech_id}}/availability",
+              "host": ["{{base_url}}"],
+              "path": ["technicians", "{{tech_id}}", "availability"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Service Catalog",
+      "item": [
+        {
+          "name": "List Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/services",
+              "host": ["{{base_url}}"],
+              "path": ["services"]
+            }
+          }
+        },
+        {
+          "name": "Create Service (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Emergency Generator Inspection\",\n  \"category\": \"ELECTRICAL\",\n  \"description\": \"Comprehensive multi-point test of standby power generation unit.\",\n  \"estimated_duration\": 120,\n  \"base_price\": 275.00,\n  \"required_skills\": [\"Generators\", \"High Voltage\"],\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/services",
+              "host": ["{{base_url}}"],
+              "path": ["services"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Service Requests",
+      "item": [
+        {
+          "name": "List Service Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/service-requests",
+              "host": ["{{base_url}}"],
+              "path": ["service-requests"]
+            }
+          }
+        },
+        {
+          "name": "Create Service Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"{{customer_id}}\",\n  \"service_id\": \"{{service_id}}\",\n  \"title\": \"Cooling loop pressure drop\",\n  \"description\": \"Chiller compressor #2 is tripping circuit breakers intermittently.\",\n  \"priority\": \"HIGH\",\n  \"service_location\": \"Central Plant Basement\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/service-requests",
+              "host": ["{{base_url}}"],
+              "path": ["service-requests"]
+            }
+          }
+        },
+        {
+          "name": "Convert Request to Work Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"priority\": \"HIGH\",\n  \"scheduled_start\": \"2026-10-30T10:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/service-requests/{{request_id}}/convert-to-work-order",
+              "host": ["{{base_url}}"],
+              "path": ["service-requests", "{{request_id}}", "convert-to-work-order"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Work Orders & Job Execution",
+      "item": [
+        {
+          "name": "List Work Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/work-orders",
+              "host": ["{{base_url}}"],
+              "path": ["work-orders"]
+            }
+          }
+        },
+        {
+          "name": "Assign Technician & Schedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technician_id\": \"{{tech_id}}\",\n  \"scheduled_start\": \"2026-10-30T13:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/work-orders/{{work_order_id}}/assign",
+              "host": ["{{base_url}}"],
+              "path": ["work-orders", "{{work_order_id}}", "assign"]
+            }
+          }
+        },
+        {
+          "name": "Technician: Start Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/work-orders/{{work_order_id}}/start",
+              "host": ["{{base_url}}"],
+              "path": ["work-orders", "{{work_order_id}}", "start"]
+            }
+          }
+        },
+        {
+          "name": "Technician: Complete Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Replaced high pressure valve and restored normal flow rate. All safety interlocks verified.\",\n  \"actual_cost\": 345.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/work-orders/{{work_order_id}}/complete",
+              "host": ["{{base_url}}"],
+              "path": ["work-orders", "{{work_order_id}}", "complete"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Parts & Inventory",
+      "item": [
+        {
+          "name": "List Parts Inventory",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/parts",
+              "host": ["{{base_url}}"],
+              "path": ["parts"]
+            }
+          }
+        },
+        {
+          "name": "Issue Part to Work Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"part_id\": \"{{part_id}}\",\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/work-orders/{{work_order_id}}/parts",
+              "host": ["{{base_url}}"],
+              "path": ["work-orders", "{{work_order_id}}", "parts"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Dispatch & Schedule",
+      "item": [
+        {
+          "name": "Get Dispatch Board",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dispatch/board",
+              "host": ["{{base_url}}"],
+              "path": ["dispatch", "board"]
+            }
+          }
+        },
+        {
+          "name": "Get Schedule Calendar",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/schedule",
+              "host": ["{{base_url}}"],
+              "path": ["schedule"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Service Reports & PDF",
+      "item": [
+        {
+          "name": "Submit Field Service Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"diagnosis\": \"Clogged intake filter causing abnormal heat buildup\",\n  \"actions_performed\": \"Drained reservoir, replaced filter cartridge, flushed lines, recalibrated thermostat sensor.\",\n  \"work_summary\": \"System running within manufacturer temperature guidelines.\",\n  \"recommendations\": \"Inspect filters every 60 days during peak operating season.\",\n  \"customer_remarks\": \"Signed off by on-site operations supervisor.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/work-orders/{{work_order_id}}/reports",
+              "host": ["{{base_url}}"],
+              "path": ["work-orders", "{{work_order_id}}", "reports"]
+            }
+          }
+        },
+        {
+          "name": "Download PDF Service Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_id}}/download",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_id}}", "download"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Dashboards & Analytics",
+      "item": [
+        {
+          "name": "Operations Dashboard Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboards/operations",
+              "host": ["{{base_url}}"],
+              "path": ["dashboards", "operations"]
+            }
+          }
+        },
+        {
+          "name": "Export Work Orders CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/work-orders?format=csv",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "work-orders"],
+              "query": [
+                { "key": "format", "value": "csv" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

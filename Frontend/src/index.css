@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+    --scrollbar-thumb: #94a3b8;
+    --scrollbar-thumb-hover: #64748b;
+    --scrollbar-track: #f1f5f9;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    --scrollbar-thumb: #475569;
+    --scrollbar-thumb-hover: #64748b;
+    --scrollbar-track: #0b1120;
+  }
+
+  body {
+    @apply bg-[#f8fafc] text-slate-900 font-sans antialiased transition-colors duration-200;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+  }
+
+  html.dark body {
+    @apply bg-[#080d19] text-slate-100;
+    background-image: radial-gradient(rgba(56, 189, 248, 0.14) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: #0284c7;
+    color: #ffffff;
+  }
+}
+
+/* Comprehensive Fallback Adapters for Day & Night Theming
+   Using :where() with 0 specificity and :not([class*="dark:"]) so explicit dark variants always take precedence */
+html.dark :where(.bg-white:not([class*="dark:bg-"])) {
+  background-color: #0f172a;
+}
+html.dark :where(.bg-white\/95:not([class*="dark:bg-"])) {
+  background-color: rgba(15, 23, 42, 0.92);
+}
+html.dark :where(.text-slate-900:not([class*="dark:text-"]), .text-gray-900:not([class*="dark:text-"])) {
+  color: #f8fafc;
+}
+html.dark :where(.text-slate-800:not([class*="dark:text-"]), .text-gray-800:not([class*="dark:text-"])) {
+  color: #e2e8f0;
+}
+html.dark :where(.text-slate-700:not([class*="dark:text-"]), .text-gray-700:not([class*="dark:text-"])) {
+  color: #cbd5e1;
+}
+html.dark :where(.text-slate-600:not([class*="dark:text-"]), .text-gray-600:not([class*="dark:text-"])) {
+  color: #94a3b8;
+}
+html.dark :where(.border-slate-200:not([class*="dark:border-"]), .border-slate-200\/80:not([class*="dark:border-"]), .border-slate-200\/90:not([class*="dark:border-"]), .border-gray-200:not([class*="dark:border-"]), .border-gray-200\/80:not([class*="dark:border-"]), .border-gray-100:not([class*="dark:border-"])) {
+  border-color: rgba(51, 65, 85, 0.7);
+}
+html.dark :where(.bg-slate-50:not([class*="dark:bg-"]), .bg-gray-50:not([class*="dark:bg-"]), .bg-gray-50\/60:not([class*="dark:bg-"]), .bg-gray-100:not([class*="dark:bg-"])) {
+  background-color: #1e293b;
+}
+html.dark select,
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]) {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border-color: #334155;
+}
+html.dark input::placeholder {
+  color: #64748b;
+}
+
+/* Futuristic Ambient & Glassmorphism Utilities */
+@layer components {
+  /* Translucent frosted glass panel with subtle specular highlight */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  }
+
+  .glass-panel-dark {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  }
+
+  /* Interactive elevation for cards */
+  .cyber-card {
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cyber-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  }
+  html.dark .cyber-card:hover {
+    box-shadow: 0 12px 28px -6px rgba(14, 165, 233, 0.18), 0 0 0 1px rgba(14, 165, 233, 0.35);
+  }
+
+  /* Micro status beacon */
+  .status-beacon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .status-beacon::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 9999px;
+    background: inherit;
+    opacity: 0.6;
+    animation: beacon-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  /* Futuristic gradient headline */
+  .gradient-heading {
+    background: linear-gradient(135deg, #0f172a 0%, #0369a1 50%, #4338ca 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .gradient-heading-dark {
+    background: linear-gradient(135deg, #ffffff 0%, #38bdf8 50%, #818cf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+@keyframes beacon-ping {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Custom scrollbars - Modern Web Guidance compliant */
+* {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: auto;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 9999px;
+  border: 2px solid var(--scrollbar-track);
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Enhanced prominent horizontal scrollbar for large dispatch timeline grids */
+.timeline-scrollbar {
+  scrollbar-color: #64748b #e2e8f0;
+  scrollbar-width: auto;
+}
+.timeline-scrollbar::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+.timeline-scrollbar::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 9999px;
+  margin: 0 4px;
+}
+.timeline-scrollbar::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 9999px;
+  border: 2.5px solid #e2e8f0;
+}
+.timeline-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}

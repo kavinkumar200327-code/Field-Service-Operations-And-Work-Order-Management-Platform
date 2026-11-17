@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>ServiSync Pro - Field Service & Work Order Management</title>
+    <script>
+      (function() {
+        try {
+          var mode = localStorage.getItem('servisync_theme_mode') || 'auto_time';
+          var isDark = false;
+          if (mode === 'dark') {
+            isDark = true;
+          } else if (mode === 'light') {
+            isDark = false;
+          } else if (mode === 'system') {
+            isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          } else {
+            // Real-time auto schedule
+            var now = new Date();
+            var currentMins = now.getHours() * 60 + now.getMinutes();
+            var dayTime = localStorage.getItem('servisync_auto_day_time') || '06:00';
+            var nightTime = localStorage.getItem('servisync_auto_night_time') || '18:00';
+            var dParts = dayTime.split(':').map(Number);
+            var nParts = nightTime.split(':').map(Number);
+            var dayMins = (dParts[0] || 6) * 60 + (dParts[1] || 0);
+            var nightMins = (nParts[0] || 18) * 60 + (nParts[1] || 0);
+            if (dayMins < nightMins) {
+              isDark = currentMins < dayMins || currentMins >= nightMins;
+            } else {
+              isDark = currentMins >= nightMins && currentMins < dayMins;
+            }
+          }
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            var metaEl = document.querySelector('meta[name="color-scheme"]');
+            if (metaEl) metaEl.content = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            var metaEl = document.querySelector('meta[name="color-scheme"]');
+            if (metaEl) metaEl.content = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

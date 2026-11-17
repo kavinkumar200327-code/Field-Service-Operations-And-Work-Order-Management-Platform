@@ -1,0 +1,83 @@
+import enum
+
+class UserRole(str, enum.Enum):
+    SUPER_ADMIN = "SUPER_ADMIN"
+    OPERATIONS_MANAGER = "OPERATIONS_MANAGER"
+    DISPATCHER = "DISPATCHER"
+    FIELD_TECHNICIAN = "FIELD_TECHNICIAN"
+    CUSTOMER = "CUSTOMER"
+
+class CustomerType(str, enum.Enum):
+    INDIVIDUAL = "INDIVIDUAL"
+    BUSINESS = "BUSINESS"
+
+class CustomerStatus(str, enum.Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+class EmploymentStatus(str, enum.Enum):
+    FULL_TIME = "FULL_TIME"
+    PART_TIME = "PART_TIME"
+    CONTRACTOR = "CONTRACTOR"
+    INACTIVE = "INACTIVE"
+
+class TechnicianAvailabilityStatus(str, enum.Enum):
+    AVAILABLE = "AVAILABLE"
+    BUSY = "BUSY"
+    ON_LEAVE = "ON_LEAVE"
+    INACTIVE = "INACTIVE"
+
+class LeaveType(str, enum.Enum):
+    LEAVE = "LEAVE"
+    SICK = "SICK"
+    BREAK = "BREAK"
+    UNAVAILABLE = "UNAVAILABLE"
+
+class PriorityLevel(str, enum.Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    URGENT = "URGENT"
+
+class ServiceRequestStatus(str, enum.Enum):
+    NEW = "NEW"
+    UNDER_REVIEW = "UNDER_REVIEW"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    CONVERTED = "CONVERTED"
+    CANCELLED = "CANCELLED"
+
+class WorkOrderStatus(str, enum.Enum):
+    DRAFT = "DRAFT"
+    SCHEDULED = "SCHEDULED"
+    ASSIGNED = "ASSIGNED"
+    EN_ROUTE = "EN_ROUTE"
+    IN_PROGRESS = "IN_PROGRESS"
+    ON_HOLD = "ON_HOLD"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+
+class PartStatus(str, enum.Enum):
+    IN_STOCK = "IN_STOCK"
+    LOW_STOCK = "LOW_STOCK"
+    OUT_OF_STOCK = "OUT_OF_STOCK"
+    DISCONTINUED = "DISCONTINUED"
+
+class InventoryTransactionType(str, enum.Enum):
+    PURCHASE = "PURCHASE"
+    RESERVED = "RESERVED"
+    CONSUMED = "CONSUMED"
+    RETURNED = "RETURNED"
+    ADJUSTMENT = "ADJUSTMENT"
+
+class NotificationType(str, enum.Enum):
+    SERVICE_REQUEST_RECEIVED = "SERVICE_REQUEST_RECEIVED"
+    WORK_ORDER_CREATED = "WORK_ORDER_CREATED"
+    TECHNICIAN_ASSIGNED = "TECHNICIAN_ASSIGNED"
+    APPOINTMENT_RESCHEDULED = "APPOINTMENT_RESCHEDULED"
+    TECHNICIAN_EN_ROUTE = "TECHNICIAN_EN_ROUTE"
+    WORK_STARTED = "WORK_STARTED"
+    WORK_COMPLETED = "WORK_COMPLETED"
+    APPOINTMENT_CANCELLED = "APPOINTMENT_CANCELLED"
+    LOW_STOCK_DETECTED = "LOW_STOCK_DETECTED"
+    CUSTOMER_FEEDBACK_RECEIVED = "CUSTOMER_FEEDBACK_RECEIVED"

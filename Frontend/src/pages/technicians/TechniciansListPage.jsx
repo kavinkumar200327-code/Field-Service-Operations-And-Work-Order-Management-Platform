@@ -316,32 +316,36 @@ export const TechniciansListPage = () => {
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-bold text-sm flex items-center justify-center uppercase shadow-sm">
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
+                    <div className="w-11 h-11 min-w-[44px] min-h-[44px] max-w-[44px] max-h-[44px] shrink-0 aspect-square rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-bold text-sm flex items-center justify-center uppercase shadow-sm select-none">
                       {t.full_name?.charAt(0) || 'T'}
                     </div>
-                    <div>
-                      <h3 className="font-bold text-slate-900 text-sm">{t.full_name}</h3>
-                      <p className="text-[11px] text-slate-500 flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-slate-400" />
-                        <span>{t.assigned_region}</span>
+                    <div className="min-w-0 flex-1 pt-0.5">
+                      <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2" title={t.full_name}>
+                        {t.full_name}
+                      </h3>
+                      <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 truncate">
+                        <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                        <span className="truncate">{t.assigned_region}</span>
                       </p>
                     </div>
                   </div>
-                  <StatusBadge status={t.availability_status} />
+                  <div className="shrink-0 pt-0.5">
+                    <StatusBadge status={t.availability_status} />
+                  </div>
                 </div>
 
                 <div className="space-y-1.5 text-xs text-slate-600 pt-3 border-t border-slate-100">
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" /> Working Hours:
+                      <Clock className="w-3.5 h-3.5 shrink-0" /> Working Hours:
                     </span>
                     <span className="font-semibold text-slate-800">{t.work_start_time} - {t.work_end_time}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400 flex items-center gap-1">
-                      <Briefcase className="w-3.5 h-3.5" /> Active Workload:
+                      <Briefcase className="w-3.5 h-3.5 shrink-0" /> Active Workload:
                     </span>
                     <span className={`font-bold px-2 py-0.5 rounded text-[11px] ${t.current_workload > 0 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
                       {t.current_workload} active {t.current_workload === 1 ? 'job' : 'jobs'}
@@ -384,7 +388,7 @@ export const TechniciansListPage = () => {
                   to={`/technicians/${t.id}`}
                   className="px-3 py-1.5 bg-sky-50 text-sky-600 hover:bg-sky-100 font-semibold text-xs rounded-xl transition flex items-center gap-1"
                 >
-                  <Eye className="w-3.5 h-3.5" />
+                  <Eye className="w-3.5 h-3.5 shrink-0" />
                   <span>View Schedule</span>
                 </Link>
               </div>

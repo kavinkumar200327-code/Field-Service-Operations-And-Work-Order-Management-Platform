@@ -286,7 +286,17 @@ export const ServiceRequestsListPage = () => {
                     <td className="py-3 px-4"><PriorityBadge priority={r.priority} /></td>
                     <td className="py-3 px-4"><StatusBadge status={r.status} /></td>
                     <td className="py-3 px-4 text-slate-500">
-                      {r.preferred_schedule ? new Date(r.preferred_schedule).toLocaleString() : 'Flexible'}
+                      {r.preferred_schedule ? (
+                        (() => {
+                          try {
+                            const s = typeof r.preferred_schedule === 'string' && !r.preferred_schedule.includes('T') ? r.preferred_schedule.replace(' ', 'T') : r.preferred_schedule;
+                            const d = new Date(s);
+                            return isNaN(d.getTime()) ? r.preferred_schedule : d.toLocaleString();
+                          } catch {
+                            return r.preferred_schedule;
+                          }
+                        })()
+                      ) : 'Flexible'}
                     </td>
                     <td className="py-3 px-4 text-right space-x-1.5">
                       {isStaff && ['NEW', 'UNDER_REVIEW', 'APPROVED'].includes(r.status) && (

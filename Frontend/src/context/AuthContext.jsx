@@ -2,7 +2,19 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { authApi } from '../api';
 import { useToast } from './ToastContext';
 
-const AuthContext = createContext(null);
+const defaultAuthContext = {
+  user: null,
+  isAuthenticated: false,
+  loading: true,
+  login: async () => ({ success: false }),
+  register: async () => ({ success: false }),
+  logout: () => {},
+  hasRole: () => false,
+  refreshUser: async () => {},
+  updateUser: () => {},
+};
+
+const AuthContext = createContext(defaultAuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -24,8 +36,9 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data.data);
       }
     } catch (err) {
-      console.error('Failed to load user profile:', err);
-      localStorage.clear();
+      // Session token is expired or unauthorized - clear auth tokens without wiping UI preferences
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
       setUser(null);
     } finally {
       setLoading(false);
@@ -133,7 +146,8 @@ export const AuthProvider = ({ children }) => {
         // ignore logout error
       }
     }
-    localStorage.clear();
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     setUser(null);
     window.location.href = '/login';
   };
@@ -169,8 +183,5 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  return context || defaultAuthContext;
 };

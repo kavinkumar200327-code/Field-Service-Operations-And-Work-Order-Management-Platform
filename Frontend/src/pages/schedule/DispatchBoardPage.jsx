@@ -905,8 +905,8 @@ export const DispatchBoardPage = () => {
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2.5">
                           {/* Avatar with Status Beacon */}
-                          <div className="relative">
-                            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+                          <div className="relative shrink-0">
+                            <div className="w-9 h-9 min-w-[36px] min-h-[36px] max-w-[36px] max-h-[36px] shrink-0 aspect-square rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-black text-xs flex items-center justify-center shadow-xs select-none">
                               {t.technician_name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
                             </div>
                             <span

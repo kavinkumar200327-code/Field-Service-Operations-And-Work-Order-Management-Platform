@@ -547,6 +547,8 @@ def hold_work_order(
 
     wo.hold_reason = req.hold_reason
     log_status_change(db, wo, WorkOrderStatus.ON_HOLD.value, current_user.id, f"Placed on hold: {req.hold_reason}")
+    if wo.assigned_technician:
+        wo.assigned_technician.availability_status = TechnicianAvailabilityStatus.AVAILABLE.value
 
     db.commit()
     db.refresh(wo)
@@ -567,6 +569,8 @@ def resume_work_order(
 
     wo.hold_reason = None
     log_status_change(db, wo, WorkOrderStatus.IN_PROGRESS.value, current_user.id, "Work resumed")
+    if wo.assigned_technician:
+        wo.assigned_technician.availability_status = TechnicianAvailabilityStatus.BUSY.value
 
     db.commit()
     db.refresh(wo)

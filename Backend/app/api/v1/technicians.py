@@ -40,6 +40,7 @@ ADMIN_AND_DISPATCHER_ROLES = [
 ]
 
 def map_technician_to_response(tech: Technician, db: Session) -> TechnicianResponse:
+    now = datetime.now(timezone.utc)
     active_statuses = [
         WorkOrderStatus.SCHEDULED.value,
         WorkOrderStatus.ASSIGNED.value,
@@ -56,6 +57,42 @@ def map_technician_to_response(tech: Technician, db: Session) -> TechnicianRespo
         SkillItem(skill_name=s.skill_name, proficiency_level=s.proficiency_level)
         for s in tech.skills
     ]
+
+    # Evaluate dynamic availability:
+    # 1. Check if technician has active leaves right now
+    has_active_leave = db.query(TechnicianAvailability).filter(
+        TechnicianAvailability.technician_id == tech.id,
+        TechnicianAvailability.start_time <= now,
+        TechnicianAvailability.end_time >= now,
+    ).first() is not None
+
+    if tech.employment_status == EmploymentStatus.INACTIVE.value:
+        effective_avail = TechnicianAvailabilityStatus.INACTIVE.value
+    elif has_active_leave or tech.availability_status == TechnicianAvailabilityStatus.ON_LEAVE.value:
+        effective_avail = TechnicianAvailabilityStatus.ON_LEAVE.value
+    else:
+        # 2. Check if technician currently has an ongoing job active right now
+        has_ongoing_job = db.query(WorkOrder).filter(
+            WorkOrder.assigned_technician_id == tech.id,
+            WorkOrder.status == WorkOrderStatus.IN_PROGRESS.value,
+            WorkOrder.scheduled_start <= now,
+            WorkOrder.scheduled_end >= now,
+        ).first() is not None
+
+        if has_ongoing_job:
+            effective_avail = TechnicianAvailabilityStatus.BUSY.value
+        else:
+            effective_avail = TechnicianAvailabilityStatus.AVAILABLE.value
+
+    # Auto-synchronize in the DB if the status drifted
+    if tech.availability_status != effective_avail:
+        tech.availability_status = effective_avail
+        try:
+            db.add(tech)
+            db.commit()
+            db.refresh(tech)
+        except Exception:
+            db.rollback()
 
     return TechnicianResponse(
         id=tech.id,

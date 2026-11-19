@@ -392,8 +392,9 @@ const ReportsPage = () => {
                         }
                       }}
                     >
-                      <Cell fill="#3B82F6" />
+                      <Cell key="cell-estimated" fill="#3B82F6" />
                       <Cell
+                        key="cell-actual"
                         fill="#10B981"
                         className="cursor-pointer hover:opacity-80 transition-opacity"
                         onClick={handleOpenCompletedOrdersModal}

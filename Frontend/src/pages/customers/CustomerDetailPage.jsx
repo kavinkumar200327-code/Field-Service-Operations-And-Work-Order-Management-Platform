@@ -22,6 +22,17 @@ export const CustomerDetailPage = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const safeFormatDate = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const safe = typeof dateStr === 'string' && !dateStr.includes('T') ? dateStr.replace(' ', 'T') : dateStr;
+      const d = new Date(safe);
+      return isNaN(d.getTime()) ? String(dateStr) : d.toLocaleDateString();
+    } catch {
+      return String(dateStr);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!customerId || customerId === 'undefined') {
@@ -141,9 +152,9 @@ export const CustomerDetailPage = () => {
                     <td className="py-3 px-4">{h.technician_name || 'Pending assignment'}</td>
                     <td className="py-3 px-4 text-slate-500">
                       {h.completed_at ? (
-                        <span>Completed: {new Date(h.completed_at).toLocaleDateString()}</span>
+                        <span>Completed: {safeFormatDate(h.completed_at)}</span>
                       ) : h.scheduled_start ? (
-                        <span>Scheduled: {new Date(h.scheduled_start).toLocaleDateString()}</span>
+                        <span>Scheduled: {safeFormatDate(h.scheduled_start)}</span>
                       ) : (
                         'Unscheduled'
                       )}

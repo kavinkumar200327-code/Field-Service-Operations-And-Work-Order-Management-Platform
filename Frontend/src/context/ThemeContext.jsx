@@ -1,6 +1,19 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-const ThemeContext = createContext();
+const defaultThemeContext = {
+  themeMode: 'auto_time',
+  resolvedTheme: 'light',
+  isDark: false,
+  dayStartTime: '06:00',
+  nightStartTime: '18:00',
+  setThemeMode: () => {},
+  setAutoSchedule: () => {},
+  toggleTheme: () => {},
+  formattedRealTime: '',
+  isRealTimeDaylight: true,
+};
+
+const ThemeContext = createContext(defaultThemeContext);
 
 const THEME_MODE_KEY = 'servisync_theme_mode';
 const DAY_TIME_KEY = 'servisync_auto_day_time';
@@ -187,10 +200,7 @@ export const ThemeProvider = ({ children }) => {
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  return context;
+  return context || defaultThemeContext;
 };
 
 export default ThemeContext;

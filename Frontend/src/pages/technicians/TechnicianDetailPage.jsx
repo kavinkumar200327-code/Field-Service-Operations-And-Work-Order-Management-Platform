@@ -34,6 +34,17 @@ export const TechnicianDetailPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const { success, error } = useToast();
 
+  const safeFormatDateTime = (dateStr) => {
+    if (!dateStr) return 'Unscheduled';
+    try {
+      const safe = typeof dateStr === 'string' && !dateStr.includes('T') ? dateStr.replace(' ', 'T') : dateStr;
+      const d = new Date(safe);
+      return isNaN(d.getTime()) ? String(dateStr) : d.toLocaleString();
+    } catch {
+      return String(dateStr);
+    }
+  };
+
   const fetchTechDetails = async () => {
     if (!technicianId || technicianId === 'undefined') {
       setLoading(false);
@@ -101,7 +112,7 @@ export const TechnicianDetailPage = () => {
       {/* Header Info Card */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-bold text-xl flex items-center justify-center uppercase shadow-md">
+          <div className="w-14 h-14 min-w-[56px] min-h-[56px] max-w-[56px] max-h-[56px] shrink-0 aspect-square rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-bold text-xl flex items-center justify-center uppercase shadow-md select-none">
             {tech.full_name?.charAt(0) || 'T'}
           </div>
           <div>
@@ -193,7 +204,7 @@ export const TechnicianDetailPage = () => {
                       {a.type}
                     </span>
                     <p className="text-slate-700 font-medium mt-1">
-                      {new Date(a.start_time).toLocaleString()} - {new Date(a.end_time).toLocaleString()}
+                      {safeFormatDateTime(a.start_time)} - {safeFormatDateTime(a.end_time)}
                     </p>
                     {a.reason && <p className="text-slate-500 text-[11px] mt-0.5">{a.reason}</p>}
                   </div>
@@ -235,7 +246,7 @@ export const TechnicianDetailPage = () => {
                     <td className="py-3 px-4">{wo.customer_name}</td>
                     <td className="py-3 px-4 font-medium text-slate-800">{wo.service_name}</td>
                     <td className="py-3 px-4 text-slate-500">
-                      {wo.scheduled_start ? new Date(wo.scheduled_start).toLocaleString() : 'Unscheduled'}
+                      {safeFormatDateTime(wo.scheduled_start)}
                     </td>
                     <td className="py-3 px-4"><StatusBadge status={wo.status} /></td>
                     <td className="py-3 px-4 text-right">

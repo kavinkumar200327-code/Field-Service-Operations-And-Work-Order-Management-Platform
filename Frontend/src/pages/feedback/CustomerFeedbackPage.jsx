@@ -132,7 +132,7 @@ export const CustomerFeedbackPage = () => {
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span className="text-[10px] text-slate-400">
-                  {new Date(f.created_at).toLocaleDateString()}
+                  {f.created_at ? new Date(typeof f.created_at === 'string' && !f.created_at.includes('T') ? f.created_at.replace(' ', 'T') : f.created_at).toLocaleDateString() : 'N/A'}
                 </span>
                 <Link
                   to={`/work-orders/${f.work_order_id}`}

@@ -54,7 +54,8 @@ api.interceptors.response.use(
 
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
-        localStorage.clear();
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
           window.location.href = '/login';
         }
@@ -75,7 +76,8 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshErr) {
         processQueue(refreshErr, null);
-        localStorage.clear();
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
           window.location.href = '/login';
         }

@@ -129,7 +129,7 @@ export const ServiceReportsListPage = () => {
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span className="text-[11px] text-slate-400">
-                  {new Date(r.completion_time).toLocaleDateString()}
+                  {r.completion_time ? new Date(typeof r.completion_time === 'string' && !r.completion_time.includes('T') ? r.completion_time.replace(' ', 'T') : r.completion_time).toLocaleDateString() : 'N/A'}
                 </span>
                 <Link
                   to={`/work-orders/${r.work_order_id}`}

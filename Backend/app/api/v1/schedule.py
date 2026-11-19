@@ -230,10 +230,13 @@ def get_dispatch_board(
         total_booked_hours = sum(j.get("duration_minutes", 60) for j in job_dicts) / 60.0
         capacity_pct = min(100, round((total_booked_hours / 8.0) * 100))
 
-        # Dynamic availability status reflection
-        avail_status = t.availability_status
-        if len(job_dicts) > 0 and avail_status == "AVAILABLE":
+        # Dynamic availability status reflection for the dispatch board date:
+        if t.employment_status == "ON_LEAVE" or len(leave_dicts) > 0:
+            avail_status = "ON_LEAVE"
+        elif len(job_dicts) > 0:
             avail_status = "BUSY"
+        else:
+            avail_status = "AVAILABLE"
 
         board_slots.append(DispatchBoardSlot(
             technician_id=t.id,
@@ -285,7 +288,7 @@ def get_dispatch_board(
     stats = {
         "total_technicians": len(board_slots),
         "available_technicians": sum(1 for s in board_slots if s.availability_status == "AVAILABLE"),
-        "busy_technicians": sum(1 for s in board_slots if s.availability_status == "BUSY" or len(s.work_orders) > 0),
+        "busy_technicians": sum(1 for s in board_slots if s.availability_status == "BUSY"),
         "total_scheduled_jobs": total_scheduled_jobs,
         "fleet_utilization_pct": fleet_utilization_pct,
         "unassigned_count": len(unassigned_dicts),
